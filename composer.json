@@ -20,5 +20,8 @@
             "email": "maxkamov48@gmail.com"
         }
     ],
-    "require": {}
+    "license": "MIT",
+    "require": {},
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
