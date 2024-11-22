@@ -1,0 +1,23 @@
+{
+    "name": "maxkamov48/crud-generator-laravel",
+    "description": "CRUD generator extenstion for Laravel",
+    "autoload": {
+        "psr-4": {
+            "Maxkamov48\\CrudGeneratorLaravel\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Maxkamov48\\CrudGeneratorLaravel\\CrudGeneratorProvider"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "maxkamov48",
+            "email": "maxkamov48@gmail.com"
+        }
+    ],
+    "require": {}
+}
