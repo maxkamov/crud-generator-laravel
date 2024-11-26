@@ -63,8 +63,17 @@ class LoadRelationsService
         return array_map(function($relation, $key){
             $type = $relation['type'];
             $fieldName = $key;
-            $className = $this->camelToPascalCase($fieldName);
+
+
+//            $className = $this->camelToPascalCase($fieldName);
+//            $classNameResource = $className."Resource";
+
+            $temp = $relation['related'];
+            $arr = explode("\\",$temp);
+            $className = $arr[count($arr) - 1];
             $classNameResource = $className."Resource";
+
+
             if($this->isSingle($type)){
                 return $this->getSingleLoad($classNameResource, $fieldName);
             }else{
@@ -80,16 +89,16 @@ class LoadRelationsService
         }, $fillables);
     }
 
-    private function camelToPascalCase($str) {
-        // Convert camelCase to words separated by spaces
-        $words = preg_split('/(?=[A-Z])/', $str);
-
-        // Capitalize the first letter of each word
-        $pascalCaseStr = ucwords(implode(' ', $words));
-
-        // Remove spaces
-        return str_replace(' ', '', $pascalCaseStr);
-    }
+//    private function camelToPascalCase($str) {
+//        // Convert camelCase to words separated by spaces
+//        $words = preg_split('/(?=[A-Z])/', $str);
+//
+//        // Capitalize the first letter of each word
+//        $pascalCaseStr = ucwords(implode(' ', $words));
+//
+//        // Remove spaces
+//        return str_replace(' ', '', $pascalCaseStr);
+//    }
 
     private function getManyLoad($classNameResource, $fieldName){
         $text = <<<EOT
