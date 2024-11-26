@@ -1,0 +1,57 @@
+<?php
+
+namespace {{apiControllerNamespace}};
+
+use {{modelNamespace}}\{{modelName}};
+use Illuminate\Http\Request;
+use {{createRequestNamespace}}\{{createRequestName}};
+use {{updateRequestNamespace}}\{{updateRequestName}};
+use Illuminate\Http\Response;
+use {{controllerNamespace}}\Controller;
+use {{resourceNamespace}}\{{resourceName}};
+
+class {{controllerName}} extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        ${{modelNamePluralLowerCase}} = {{modelName}}::paginate();
+
+        return {{resourceName}}::collection(${{modelNamePluralLowerCase}});
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store({{createRequestName}} $request): {{modelName}}
+    {
+        return {{modelName}}::create($request->validated());
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show({{modelName}} ${{modelNameLowerCase}}): {{resourceName}}
+    {
+        return new {{resourceName}}(${{modelNameLowerCase}});
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update({{updateRequestName}} $request, {{modelName}} ${{modelNameLowerCase}}): {{modelName}}
+    {
+        ${{modelNameLowerCase}}->update($request->validated());
+
+        return ${{modelNameLowerCase}};
+    }
+
+    public function destroy({{modelName}} ${{modelNameLowerCase}}): Response
+    {
+        ${{modelNameLowerCase}}->delete();
+
+        return response()->noContent();
+    }
+}
