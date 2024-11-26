@@ -6,15 +6,12 @@ namespace Maxkamov48\CrudGeneratorLaravel\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Str;
 use Maxkamov48\CrudGeneratorLaravel\Generator\BaseControllerFile;
 use Maxkamov48\CrudGeneratorLaravel\Generator\BaseModelFile;
 use Maxkamov48\CrudGeneratorLaravel\Generator\BaseRequestFile;
 use Maxkamov48\CrudGeneratorLaravel\Generator\BaseResourceFile;
 use Maxkamov48\CrudGeneratorLaravel\Generator\Contracts\FileTemplateInterface;
 use Maxkamov48\CrudGeneratorLaravel\Generator\CoreGenerator;
-use Maxkamov48\CrudGeneratorLaravel\Services\LoadRelationsService;
 use Maxkamov48\CrudGeneratorLaravel\Services\ProjectService;
 
 class TestCommand extends Command
@@ -24,7 +21,7 @@ class TestCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:all';
+    protected $signature = 'generate:all {--folder=}';
 
     /**
      * The console command description.
@@ -49,8 +46,11 @@ class TestCommand extends Command
     public function handle()
     {
         $service = new CoreGenerator(new Filesystem());
-        foreach ($this->projectService->getModels() as $model) {
+        $option = $this->option('folder');
+        $prefix = $this->getPrefix($option);
+//        dd($prefix);
 
+        foreach ($this->projectService->getModels() as $model) {
             $modelName = $model['name'];
             $baseModel = new BaseModelFile(
                 "$modelName",
@@ -59,7 +59,7 @@ class TestCommand extends Command
             );
             $baseCreateRequest = new BaseRequestFile(
                 $modelName . "CreateRequest",
-                'App\Http\Controllers\Requests',
+                'App\Http\Requests'.$prefix,
                 'api/RequestCustom',
                 $model,
             );
@@ -67,26 +67,23 @@ class TestCommand extends Command
 
             $baseUpdateRequest = new BaseRequestFile(
                 $modelName.'UpdateRequest',
-                'App\Http\Controllers\Requests',
+                'App\Http\Requests'.$prefix,
                 'api/RequestCustom',
                 $model,
             );
             $this->checkAndWrite($service, $baseUpdateRequest);
-//            $service->execute($baseUpdateRequest);
 
             $baseResource = new BaseResourceFile(
                 $modelName.'Resource',
-                'App\Http\Controllers\Resources',
+                'App\Http\Resources'.$prefix,
                 'api/ResourceCustom',
                 $model
             );
             $this->checkAndWrite($service, $baseResource);
-//            $service->execute($baseResource);
-
 
             $baseControllerFile = new BaseControllerFile(
                 $modelName.'Controller',
-                'App\Http\Controllers\Api',
+                'App\Http\Controllers\Api'.$prefix,
                 'api/ControllerCustom',
                 $baseModel,
                 $baseCreateRequest,
@@ -94,19 +91,8 @@ class TestCommand extends Command
                 $baseResource
             );
             $this->checkAndWrite($service, $baseControllerFile);
-//            $service->execute($baseControllerFile);
-
             $this->info("Generation completed!");
-//            dd($model);
         }
-
-
-        /**
-         *
-         * if ($this->files->exists($modelPath) && $this->ask('Already exist Model. Do you want overwrite (y/n)?', 'y') == 'n') {
-         * return $this;
-         * }
-         */
 
 
 
@@ -150,47 +136,10 @@ class TestCommand extends Command
         }
     }
 
-//    public function usedTime(){
-//        $service = new CoreGenerator(new Filesystem());
-//
-//
-//        $baseModel = new BaseModelFile(
-//            'SomeModel',
-//            'App\Models',
-//            'Model'
-//        );
-//        $service->execute($baseModel);
-//
-//        $baseCreateRequest = new BaseRequestFile(
-//            'SomeCreateRequest',
-//            'App\Http\Controllers\Requests',
-//            'Request'
-//        );
-//        $service->execute($baseCreateRequest);
-//
-//        $baseUpdateRequest = new BaseRequestFile(
-//            'SomeUpdateRequest',
-//            'App\Http\Controllers\Requests',
-//            'Request'
-//        );
-//        $service->execute($baseUpdateRequest);
-//
-//        $baseResource = new BaseResourceFile(
-//            'SomeResource',
-//            'App\Http\Controllers\Resources',
-//            'api/ResourceCustom'
-//        );
-//        $service->execute($baseResource);
-//
-//        $baseControllerFile = new BaseControllerFile(
-//            'SomeController',
-//            'App\Http\Controllers\Api',
-//            'api/ControllerCustom',
-//            $baseModel,
-//            $baseCreateRequest,
-//            $baseUpdateRequest,
-//            $baseResource
-//        );
-//        $service->execute($baseControllerFile);
-//    }
+    private function getPrefix($prefix){
+        if($prefix == null){
+            return '';
+        }
+        return "\\$prefix";
+    }
 }
