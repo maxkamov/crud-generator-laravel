@@ -48,7 +48,6 @@ class TestCommand extends Command
         $service = new CoreGenerator(new Filesystem());
         $option = $this->option('folder');
         $prefix = $this->getPrefix($option);
-//        dd($prefix);
 
         foreach ($this->projectService->getModels() as $model) {
             $modelName = $model['name'];
@@ -140,6 +139,7 @@ class TestCommand extends Command
         if($prefix == null){
             return '';
         }
-        return "\\$prefix";
+        $str = str_replace('/', '\\', $prefix);
+        return "\\$str";
     }
 }
