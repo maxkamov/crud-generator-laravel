@@ -30,9 +30,10 @@ class {{controllerName}} extends Controller
      * store
      * @authenticated
      */
-    public function store({{createRequestName}} $request): {{modelName}}
+    public function store({{createRequestName}} $request): {{resourceName}}
     {
-        return {{modelName}}::create($request->validated());
+        $user = {{modelName}}::create($request->validated());
+        return new {{resourceName}}($user);
     }
 
     /**
@@ -50,11 +51,11 @@ class {{controllerName}} extends Controller
      * update
      * @authenticated
      */
-    public function update({{updateRequestName}} $request, {{modelName}} ${{modelNameLowerCase}}): {{modelName}}
+    public function update({{updateRequestName}} $request, {{modelName}} ${{modelNameLowerCase}}): {{resourceName}}
     {
         ${{modelNameLowerCase}}->update($request->validated());
 
-        return ${{modelNameLowerCase}};
+        return new {{resourceName}}(${{modelNameLowerCase}});
     }
 
     /**
