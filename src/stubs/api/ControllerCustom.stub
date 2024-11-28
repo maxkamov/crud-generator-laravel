@@ -10,10 +10,14 @@ use Illuminate\Http\Response;
 use {{controllerNamespace}}\Controller;
 use {{resourceNamespace}}\{{resourceName}};
 
+{{controllerHeaderDocs}}
 class {{controllerName}} extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * index
+     * @authenticated
+     * @apiResourceCollection {{resourceNamespace}}\{{resourceName}}
+     * @apiResourceModel {{modelNamespace}}\{{modelName}}
      */
     public function index(Request $request)
     {
@@ -23,7 +27,8 @@ class {{controllerName}} extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * store
+     * @authenticated
      */
     public function store({{createRequestName}} $request): {{modelName}}
     {
@@ -31,7 +36,10 @@ class {{controllerName}} extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * show
+     * @authenticated
+     * @apiResource {{resourceNamespace}}\{{resourceName}}
+     * @apiResourceModel {{modelNamespace}}\{{modelName}}
      */
     public function show({{modelName}} ${{modelNameLowerCase}}): {{resourceName}}
     {
@@ -39,7 +47,8 @@ class {{controllerName}} extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * update
+     * @authenticated
      */
     public function update({{updateRequestName}} $request, {{modelName}} ${{modelNameLowerCase}}): {{modelName}}
     {
@@ -48,6 +57,10 @@ class {{controllerName}} extends Controller
         return ${{modelNameLowerCase}};
     }
 
+    /**
+     * destroy
+     * @authenticated
+     */
     public function destroy({{modelName}} ${{modelNameLowerCase}}): Response
     {
         ${{modelNameLowerCase}}->delete();

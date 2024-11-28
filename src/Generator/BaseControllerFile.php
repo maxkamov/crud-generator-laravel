@@ -56,10 +56,36 @@ class BaseControllerFile extends BaseTemplateFile implements FileTemplateInterfa
 
             '{{resourceNamespace}}' => $this->baseResource->getNamespace(),
             '{{resourceName}}' => $this->baseResource->getName(),
+
+            '{{controllerHeaderDocs}}' => $this->getDocs(),
         ];
     }
 
     public static function create($data): self {
         return new self($data['name'], $data['namespace'], $data['stubFilePath']);
+    }
+
+    public function getDocs(): string {
+        $docDetails = [
+            'group' => $this->getNamespace(),
+            'sub_group' => $this->getName(),
+            'sub_group_description' => 'Some Description',
+        ];
+
+        $group = $docDetails['group'];
+        $subGroup = $docDetails['sub_group'];
+        $subGroupDescription = $docDetails['sub_group_description'];
+
+        $docsText = <<<EOT
+/**
+ * @group $group
+ *
+ * APIs for managing resources
+ *
+ * @subgroup $subGroup
+ * @subgroupDescription $subGroupDescription
+ */
+EOT;
+        return $docsText;
     }
 }

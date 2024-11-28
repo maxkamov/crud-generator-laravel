@@ -20,6 +20,7 @@ class BaseRequestFile extends BaseTemplateFile implements FileTemplateInterface
             '{{requestNamespace}}' => $this->getNamespace(),
             '{{modelName}}' => $this->getName(),
             '{{rules}}' => $this->getRules(),
+            '{{docBlock}}' => $this->getDocBlock(),
         ];
     }
 
@@ -39,5 +40,21 @@ class BaseRequestFile extends BaseTemplateFile implements FileTemplateInterface
             array_push($result, $data);
         }
         return $result;
+    }
+
+    private function getDocBlock(){
+        $result = '';
+        foreach ($this->modelArray['fillable'] as $value) {
+            $result .= '* @bodyParam '. $value . "\n \t";
+        }
+
+        $docBlock = <<<EOT
+/**
+     * Get the validation rules that apply to the request.
+     $result
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+EOT;
+        return $docBlock;
     }
 }
