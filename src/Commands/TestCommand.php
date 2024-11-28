@@ -84,6 +84,7 @@ class TestCommand extends Command
                 $modelName.'Controller',
                 'App\Http\Controllers\Api'.$prefix,
                 'api/ControllerCustom',
+                $prefix,
                 $baseModel,
                 $baseCreateRequest,
                 $baseUpdateRequest,

@@ -7,6 +7,7 @@ use Maxkamov48\CrudGeneratorLaravel\Generator\Contracts\FileTemplateInterface;
 
 class BaseControllerFile extends BaseTemplateFile implements FileTemplateInterface
 {
+    private string $prefix;
 
     private BaseModelFile $baseModel;
 
@@ -19,7 +20,7 @@ class BaseControllerFile extends BaseTemplateFile implements FileTemplateInterfa
     /**
      * @param BaseModelFile $baseModel
      */
-    public function __construct($name, $namespace, $stubFile,
+    public function __construct($name, $namespace, $stubFile, $prefix,
                                 BaseModelFile $baseModel,
                                 BaseRequestFile $baseCreateRequest,
                                 BaseRequestFile $baseUpdateRequest,
@@ -30,6 +31,7 @@ class BaseControllerFile extends BaseTemplateFile implements FileTemplateInterfa
         $this->baseCreateRequest = $baseCreateRequest;
         $this->baseUpdateRequest = $baseUpdateRequest;
         $this->baseResource = $baseResource;
+        $this->prefix = $prefix;
         parent::__construct($name,$namespace,$stubFile);
     }
 
@@ -67,7 +69,7 @@ class BaseControllerFile extends BaseTemplateFile implements FileTemplateInterfa
 
     public function getDocs(): string {
         $docDetails = [
-            'group' => $this->getNamespace(),
+            'group' => $this->prefix,
             'sub_group' => $this->getName(),
             'sub_group_description' => 'Some Description',
         ];
