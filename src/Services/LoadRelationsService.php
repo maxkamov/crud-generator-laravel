@@ -53,7 +53,9 @@ class LoadRelationsService
     public function getResult(){
         $singleData = $this->singleData;
         $singleProperties = $singleData;
+        $totalTextId = "'id'". ' => ' . "\$this->id";
         return implode(", \n", [
+            ...[$totalTextId],
             ...$this->getColumnFields($singleProperties['fillable']),
             ...$this->getRelationsFields($singleProperties['relations']),
         ]);
@@ -63,9 +65,7 @@ class LoadRelationsService
         return array_map(function($relation, $key){
             $type = $relation['type'];
             $fieldName = $key;
-
-
-//            $className = $this->camelToPascalCase($fieldName);
+            $functionName = $this->camelToSnakeCase($fieldName);
 //            $classNameResource = $className."Resource";
 
             $temp = $relation['related'];
@@ -75,9 +75,9 @@ class LoadRelationsService
 
 
             if($this->isSingle($type)){
-                return $this->getSingleLoad($classNameResource, $fieldName);
+                return $this->getSingleLoad($classNameResource, $fieldName, $functionName);
             }else{
-                return $this->getManyLoad($classNameResource, $fieldName);
+                return $this->getManyLoad($classNameResource, $fieldName, $functionName);
             }
         }, $relations, array_keys($relations));
     }
@@ -87,6 +87,14 @@ class LoadRelationsService
             $totalText = "'$item'". ' => ' . "\$this->$item";
             return $totalText;
         }, $fillables);
+    }
+    private function camelToSnakeCase($string){
+        // Regular expression to match uppercase letters
+        $pattern = '/([A-Z])/u';
+        // Replacement string with an underscore before the matched letter
+        $replacement = '_$1';
+        // Perform the replacement and convert the entire string to lowercase
+        return strtolower(preg_replace($pattern, $replacement, $string));
     }
 
 //    private function camelToPascalCase($str) {
@@ -100,16 +108,16 @@ class LoadRelationsService
 //        return str_replace(' ', '', $pascalCaseStr);
 //    }
 
-    private function getManyLoad($classNameResource, $fieldName){
+    private function getManyLoad($classNameResource, $fieldName, $functionName){
         $text = <<<EOT
-'$fieldName' => $classNameResource::collection(\$this->whenLoaded('$fieldName'))
+'$functionName' => $classNameResource::collection(\$this->whenLoaded('$fieldName'))
 EOT;
         return $text;
     }
 
-    private function getSingleLoad($classNameResource, $fieldName){
+    private function getSingleLoad($classNameResource, $fieldName, $functionName){
         $text = <<<EOT
-'$fieldName' => new $classNameResource(\$this->whenLoaded('$fieldName'))
+'$functionName' => new $classNameResource(\$this->whenLoaded('$fieldName'))
 EOT;
         return $text;
     }
