@@ -123,6 +123,6 @@ EOT;
     }
 
     private function isSingle($type){
-        return $type === 'BelongsTo' || $type === 'HasOne' || $type === 'BelongsToMany';
+        return $type === 'BelongsTo' || $type === 'HasOne';// || $type === 'BelongsToMany';
     }
 }
